@@ -6,8 +6,11 @@
   <artifactId>alice2</artifactId>
   <version>2.6.0-SNAPSHOT</version>
 
+
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <exec.mainClass>edu.cmu.cs.stage3.alice.authoringtool.JAlice</exec.mainClass>
+    <exec.workingdir>Required</exec.workingdir>
     <java.version>17</java.version>
     <jogl.version>2.4.0</jogl.version>
 
@@ -17,6 +20,8 @@
     <!--  TODO: Have the future build system replace local with a build #  -->
     <alice.build.metadata>+build.local</alice.build.metadata>
   </properties>
+
+
 
   <dependencies>
     <!-- https://mvnrepository.com/artifact/javax.vecmath/vecmath -->
@@ -71,11 +76,20 @@
       <systemPath>${pom.basedir}/lib/mp3plugin.jar</systemPath>
     </dependency>
     <!-- https://mvnrepository.com/artifact/org.mozilla/juniversalchardet -->
+    <!--
     <dependency>
       <groupId>org.mozilla</groupId>
       <artifactId>juniversalchardet</artifactId>
       <version>1.0.3</version>
     </dependency>
+    -->
+    <!-- https://mvnrepository.com/artifact/com.googlecode.juniversalchardet/juniversalchardet -->
+    <dependency>
+        <groupId>com.googlecode.juniversalchardet</groupId>
+        <artifactId>juniversalchardet</artifactId>
+        <version>1.0.3</version>
+    </dependency>
+
     <!-- https://mvnrepository.com/artifact/xml-apis/xml-apis -->
     <dependency>
       <groupId>xml-apis</groupId>
@@ -93,6 +107,31 @@
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.3.2</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <executable>echo</executable>
+          <arguments>
+            <argument>-classpath</argument>
+            <classpath />
+            <argument>-Dpython.home=jython</argument>
+            <argument>-Dpython.path=jython/Lib/alice</argument>
+            <argument>-Xmx1024m</argument>
+            <argument>-Dfile.encoding=UTF-8</argument>
+            <argument>edu.cmu.cs.stage3.alice.authoringtool.JAlice</argument>
+          </arguments>
+          <workingDirectory>Required</workingDirectory>
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
@@ -203,7 +242,6 @@
           </execution>
         </executions>
       </plugin>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
